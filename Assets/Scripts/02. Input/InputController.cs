@@ -1,3 +1,4 @@
+using common;
 using UnityEngine;
 
 public class InputController : MonoBehaviour
@@ -34,7 +35,7 @@ public class InputController : MonoBehaviour
             // Valid Position!
             // TODO :: 테스트 용으로 직접 놔두는 것
             // 나중에는 GameManager 쪽으로 입력 올리기
-            boardRenderer.PlaceStoneObj(x, y, StoneColor.White);
+            boardRenderer.PlaceStoneObj(x, y, Constants.StoneColor.White);
         }
     }
 }

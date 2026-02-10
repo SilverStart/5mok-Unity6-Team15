@@ -1,3 +1,4 @@
+using common;
 using UnityEngine;
 
 public class BoardRenderer : MonoBehaviour
@@ -11,11 +12,11 @@ public class BoardRenderer : MonoBehaviour
 
     [SerializeField] private float cellSize = 0.4f;
 
-    public void PlaceStoneObj(int x, int y, StoneColor color)
+    public void PlaceStoneObj(int x, int y, Constants.StoneColor color)
     {
         Vector3 spawnPosition = GetWorldPosition(x, y);
 
-        GameObject stonePrefab = color == StoneColor.White ? whiteStonePrefab : blackStonePrefab;
+        GameObject stonePrefab = color == Constants.StoneColor.White ? whiteStonePrefab : blackStonePrefab;
         Instantiate(stonePrefab, spawnPosition, Quaternion.identity, transform);
 
         ShowLastStoneMarker(x, y);
@@ -45,10 +46,4 @@ public class BoardRenderer : MonoBehaviour
     {
         return cellSize;
     }
-}
-
-public enum StoneColor
-{
-    Black,
-    White,
 }
