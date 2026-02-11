@@ -8,7 +8,7 @@
             White,
             None,
         }
-    }
 
-    public const int BOARD_SIZE = 15;
+        public const int BOARD_SIZE = 15;
+    }
 }
