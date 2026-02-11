@@ -1,18 +1,49 @@
+using common;
 using UnityEngine;
 
 public class BoardRenderer : MonoBehaviour
 {
-    public enum StoneColor
+    [SerializeField] private GameObject blackStonePrefab;
+    [SerializeField] private GameObject whiteStonePrefab;
+
+    [SerializeField] private GameObject lastStoneMarker;
+
+    [SerializeField] private Transform startPoint;
+
+    [SerializeField] private float cellSize = 0.4f;
+
+    public void PlaceStoneObj(int x, int y, Constants.StoneColor color)
     {
-        Black,
-        White,
+        Vector3 spawnPosition = GetWorldPosition(x, y);
+
+        GameObject stonePrefab = color == Constants.StoneColor.White ? whiteStonePrefab : blackStonePrefab;
+        Instantiate(stonePrefab, spawnPosition, Quaternion.identity, transform);
+
+        ShowLastStoneMarker(x, y);
     }
 
-    public void PlaceStoneObj(float x, float y, StoneColor color)
+    private Vector3 GetWorldPosition(int x, int y)
     {
+        float worldX = startPoint.position.x + (cellSize * x);
+        float worldY = startPoint.position.y - (cellSize * y);
+
+        return new Vector3(worldX, worldY, 0);
     }
 
-    public void ShowLastStoneMarker()
+    void ShowLastStoneMarker(int x, int y)
     {
+        if (!lastStoneMarker.activeSelf) lastStoneMarker.SetActive(true);
+
+        lastStoneMarker.transform.position = GetWorldPosition(x, y);
+    }
+
+    public Transform GetStartPoint()
+    {
+        return startPoint;
+    }
+
+    public float GetCellSize()
+    {
+        return cellSize;
     }
 }
