@@ -40,6 +40,7 @@ public class LoginManager : MonoBehaviour
         else
         {
             error.enabled = true;
+            error.text = "이메일 또는 패스워드가 다릅니다.";
         }
     }
 
