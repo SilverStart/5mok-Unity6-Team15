@@ -1,6 +1,6 @@
 ﻿namespace common
 {
-    public static class Constants
+    public static partial class Constants
     {
         public enum StoneColor
         {
