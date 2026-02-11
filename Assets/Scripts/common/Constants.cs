@@ -6,6 +6,9 @@
         {
             Black,
             White,
+            None,
         }
     }
+
+    public const int BOARD_SIZE = 15;
 }
