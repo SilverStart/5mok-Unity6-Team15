@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using UnityEngine;
 using static common.Constants;
 
@@ -30,7 +31,7 @@ public class PatternAnalyzer
 
     private string BuildLine(StoneColor[,] boardState, int x, int y, (int dx, int dy) direction, StoneColor currentPlayer)
     {
-        string line = "";
+        StringBuilder line = new();
 
         for (int i = -4; i <= 4; i++)
         {
@@ -39,18 +40,24 @@ public class PatternAnalyzer
 
             if (nx < 0 || nx >= boardState.GetLength(0) || ny < 0 || ny >= boardState.GetLength(1))
             {
-                // line += "B";
-                line = (i < 0) ? "B" + line : line + "B";
+                // line = (i < 0) ? "B" + line : line + "B";
+                if (i < 0)
+                    line.Insert(0, 'B');
+                else
+                    line.Append('B');
                 continue;
             }
 
             StoneColor nextState = boardState[nx, ny];
             char nextC = nextState == StoneColor.None ? 'E' : nextState == currentPlayer ? 'S' : 'B';
 
-            line = (i < 0) ? nextC + line : line + nextC;
+            if (i < 0)
+                line.Insert(0, nextC);
+            else
+                line.Append(nextC);
         }
 
-        return line;
+        return line.ToString();
     }
 
     private PatternType MatchBestPattern(string line)
