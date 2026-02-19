@@ -10,13 +10,13 @@ public class OmokAI
 {
     private const int MAX_DEPTH = 3;
     private const int MAX_SCORE = 10000000;
+    private const int MAX_CANDIDATES = 25;
     private const int DEFENSE_MULTIPLIER = 2;
     private PatternAnalyzer patternAnalyzer = new();
     private StoneColor stoneColor;
 
     private int minimaxCount = 0;
     private int totalMinimaxCount = 0;
-    private int caseConunt = 1;
 
     public void SetStoneColor(StoneColor color)
     {
@@ -67,12 +67,13 @@ public class OmokAI
                 }
 
                 alpha = Mathf.Max(alpha, bestScore);
-
-
             }
 
-            if (bestMove == null)
-                return (board.GetLength(0) / 2, board.GetLength(1) / 2);    // null이면 Center에 놓기기 (주의!)
+            if (bestMove == null && validPositions.Count > 0)
+            {
+                bestMove = (validPositions[0].row, validPositions[0].col);
+            }
+
             return bestMove;
         });
 
@@ -227,6 +228,7 @@ public class OmokAI
             return new List<(int row, int col, int score)> { (rows / 2, cols / 2, 0) };
         }
 
+        // 2) 즉시 승리 위치 우선 수집집
         var winMoves = new List<(int row, int col, int score)>();
         for (int i = 0; i < candidates.Count; i++)
         {
@@ -247,14 +249,12 @@ public class OmokAI
 
         StoneColor enemy = stoneColor == StoneColor.White ? StoneColor.Black : StoneColor.White;
 
+        // 3) 즉시 패배 방지 위치 우선 수집집
         var blockMoves = new List<(int row, int col, int score)>();
         for (int i = 0; i < candidates.Count; i++)
         {
             var (r, c, sc) = candidates[i];
             board[r, c] = enemy;
-
-            /* if (CheckGameWin(board, enemy, r, c))
-                blockMoves.Add((r, c, sc)); */
 
             if (OmokRules.CheckWin(r, c, enemy, board))
                 blockMoves.Add((r, c, sc));
@@ -270,69 +270,10 @@ public class OmokAI
         }
 
         candidates.Sort((a, b) => b.score.CompareTo(a.score));
-        int k = Mathf.Min(25, candidates.Count);
 
-        if (candidates.Count > k)
-            candidates.RemoveRange(k, candidates.Count - k);
+        if (candidates.Count > MAX_CANDIDATES)
+            candidates.RemoveRange(MAX_CANDIDATES, candidates.Count - MAX_CANDIDATES);
 
         return candidates;
-    }
-
-    private bool CheckGameWin(StoneColor[,] board, StoneColor player, int row, int col)
-    {
-        if (CheckGaro(board, player, row, col) || CheckSero(board, player, row, col) || CheckDiagonal(board, player, row, col))
-            return true;
-
-        return false;
-    }
-
-    private bool CheckGaro(StoneColor[,] board, StoneColor player, int row, int col)
-    {
-        for (int i = 0; i < 5; i++)
-        {
-            if (row + i < 0 || row + i >= board.GetLength(0) || col < 0 || col >= board.GetLength(1) || (board[row + i, col] != player))
-                return false;
-        }
-
-        return true;
-    }
-
-    private bool CheckSero(StoneColor[,] board, StoneColor player, int row, int col)
-    {
-        for (int i = 0; i < 5; i++)
-        {
-            if (row < 0 || row >= board.GetLength(0) || col + i < 0 || col + i >= board.GetLength(1) || (board[row, col + i] != player))
-                return false;
-        }
-
-        return true;
-    }
-
-    private bool CheckDiagonal(StoneColor[,] board, StoneColor player, int row, int col)
-    {
-        bool isWin = true;
-
-        for (int i = 0; i < 5; i++)
-        {
-            int nx = row + i;
-            int ny = col + i;
-
-            if (nx < 0 || nx >= board.GetLength(0) || ny < 0 || ny >= board.GetLength(1) || (board[nx, ny] != player))
-                isWin = false;
-        }
-
-        if (isWin)
-            return isWin;
-
-        for (int i = 0; i < 5; i++)
-        {
-            int nx = row + i;
-            int ny = col - i;
-
-            if (nx < 0 || nx >= board.GetLength(0) || ny < 0 || ny >= board.GetLength(1) || (board[nx, ny] != player))
-                isWin = false;
-        }
-
-        return isWin;
     }
 }
