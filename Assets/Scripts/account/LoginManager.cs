@@ -1,6 +1,9 @@
 using System;
+
 using common;
+
 using TMPro;
+
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -25,15 +28,17 @@ public class LoginManager : MonoBehaviour
     private void Login()
     {
         String savedEmail = PlayerPrefs.GetString("email");
-        String savedPassword = PlayerPrefs.GetString("password");
+        String savedEncryptedPassword = PlayerPrefs.GetString("password");
 
-        if (HasNoAccount(savedEmail, savedPassword))
+        if (HasNoAccount(savedEmail, savedEncryptedPassword))
         {
             ShowNoAccountMessage();
             return;
         }
 
-        if (email.text == savedEmail && password.text == savedPassword)
+        String encryptedPassword = AESCrypto.Encrypt(password.text);
+
+        if (email.text == savedEmail && encryptedPassword == savedEncryptedPassword)
         {
             SceneManager.LoadScene((int)Constants.SceneName.InGame);
         }
