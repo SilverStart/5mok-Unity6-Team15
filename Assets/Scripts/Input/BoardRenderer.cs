@@ -6,6 +6,7 @@ public class BoardRenderer : MonoBehaviour
 {
     [SerializeField] private GameObject blackStonePrefab;
     [SerializeField] private GameObject whiteStonePrefab;
+    [SerializeField] private GameObject markerXPrefab;
 
     [SerializeField] private GameObject lastStoneMarker;
 
@@ -13,6 +14,16 @@ public class BoardRenderer : MonoBehaviour
 
     [SerializeField] private float cellSize = 0.4f;
     [SerializeField] private Transform positionSelector;
+
+    public void PlaceStoneObj(int x, int y, Constants.StoneColor color)
+    {
+        Vector3 spawnPosition = GetWorldPosition(x, y);
+
+        GameObject stonePrefab = color == Constants.StoneColor.White ? whiteStonePrefab : blackStonePrefab;
+        Instantiate(stonePrefab, spawnPosition, Quaternion.identity, transform);
+
+        ShowLastStoneMarker(x, y);
+    }
 
     public void ShowPositionToPlaceStoneMarker(int x, int y)
     {
@@ -25,14 +36,11 @@ public class BoardRenderer : MonoBehaviour
         positionSelector.gameObject.SetActive(false);
     }
 
-    public void PlaceStoneObj(int x, int y, Constants.StoneColor color)
+    public void PlaceMarkerX(int x, int y)
     {
         Vector3 spawnPosition = GetWorldPosition(x, y);
 
-        GameObject stonePrefab = color == Constants.StoneColor.White ? whiteStonePrefab : blackStonePrefab;
-        Instantiate(stonePrefab, spawnPosition, Quaternion.identity, transform);
-
-        ShowLastStoneMarker(x, y);
+        Instantiate(markerXPrefab, spawnPosition, Quaternion.identity, transform);
     }
 
     private Vector3 GetWorldPosition(int x, int y)
@@ -43,7 +51,7 @@ public class BoardRenderer : MonoBehaviour
         return new Vector3(worldX, worldY, 0);
     }
 
-    void ShowLastStoneMarker(int x, int y)
+    private void ShowLastStoneMarker(int x, int y)
     {
         if (!lastStoneMarker.activeSelf) lastStoneMarker.SetActive(true);
 
