@@ -27,12 +27,18 @@ public class LoginManager : MonoBehaviour
 
     private void Login()
     {
+        if (HasEmptyFields(email.text, password.text))
+        {
+            ShowErrorMessage("이메일과 패스워드를 입력해주세요.");
+            return;
+        }
+
         String savedEmail = PlayerPrefs.GetString("email");
         String savedEncryptedPassword = PlayerPrefs.GetString("password");
 
         if (HasNoAccount(savedEmail, savedEncryptedPassword))
         {
-            ShowNoAccountMessage();
+            ShowErrorMessage("계정이 없습니다. 회원가입을 먼저 진행해주세요.");
             return;
         }
 
@@ -44,9 +50,13 @@ public class LoginManager : MonoBehaviour
         }
         else
         {
-            error.enabled = true;
-            error.text = "이메일 또는 패스워드가 다릅니다.";
+            ShowErrorMessage("이메일 또는 패스워드가 다릅니다.");
         }
+    }
+
+    private bool HasEmptyFields(String email, String password)
+    {
+        return email == "" || password == "";
     }
 
     private bool HasNoAccount(String email, String password)
@@ -54,10 +64,10 @@ public class LoginManager : MonoBehaviour
         return email == "" && password == "";
     }
 
-    private void ShowNoAccountMessage()
+    private void ShowErrorMessage(String errorMessage)
     {
         error.enabled = true;
-        error.text = "계정이 없습니다. 회원가입을 먼저 진행해주세요.";
+        error.text = errorMessage;
     }
 
     void OnDestroy()
