@@ -525,6 +525,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1390494050}
     - target: {fileID: 3827126737045250409, guid: 49939e6e8b531a84a886d95a4c5b0843, type: 3}
+      propertyPath: markerXPrefab
+      value: 
+      objectReference: {fileID: 3084197863942546418, guid: d0ac80f15bf938543ab3beb7ea44ae29, type: 3}
+    - target: {fileID: 3827126737045250409, guid: 49939e6e8b531a84a886d95a4c5b0843, type: 3}
       propertyPath: lastStoneMarker
       value: 
       objectReference: {fileID: 450483674}
