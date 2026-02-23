@@ -1,4 +1,5 @@
 using common;
+
 using UnityEngine;
 
 public class BoardRenderer : MonoBehaviour
@@ -11,6 +12,18 @@ public class BoardRenderer : MonoBehaviour
     [SerializeField] private Transform startPoint;
 
     [SerializeField] private float cellSize = 0.4f;
+    [SerializeField] private Transform positionSelector;
+
+    public void ShowPositionToPlaceStoneMarker(int x, int y)
+    {
+        positionSelector.position = GetWorldPosition(x, y);
+        positionSelector.gameObject.SetActive(true);
+    }
+
+    public void HidePositionToPlaceStoneMarker()
+    {
+        positionSelector.gameObject.SetActive(false);
+    }
 
     public void PlaceStoneObj(int x, int y, Constants.StoneColor color)
     {
