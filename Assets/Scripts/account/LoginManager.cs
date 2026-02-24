@@ -1,6 +1,9 @@
 using System;
+
 using common;
+
 using TMPro;
+
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -24,24 +27,36 @@ public class LoginManager : MonoBehaviour
 
     private void Login()
     {
-        String savedEmail = PlayerPrefs.GetString("email");
-        String savedPassword = PlayerPrefs.GetString("password");
-
-        if (HasNoAccount(savedEmail, savedPassword))
+        if (HasEmptyFields(email.text, password.text))
         {
-            ShowNoAccountMessage();
+            ShowErrorMessage("이메일과 패스워드를 입력해주세요.");
             return;
         }
 
-        if (email.text == savedEmail && password.text == savedPassword)
+        String savedEmail = PlayerPrefs.GetString("email");
+        String savedEncryptedPassword = PlayerPrefs.GetString("password");
+
+        if (HasNoAccount(savedEmail, savedEncryptedPassword))
+        {
+            ShowErrorMessage("계정이 없습니다. 회원가입을 먼저 진행해주세요.");
+            return;
+        }
+
+        String encryptedPassword = AESCrypto.Encrypt(password.text);
+
+        if (email.text == savedEmail && encryptedPassword == savedEncryptedPassword)
         {
             SceneManager.LoadScene((int)Constants.SceneName.InGame);
         }
         else
         {
-            error.enabled = true;
-            error.text = "이메일 또는 패스워드가 다릅니다.";
+            ShowErrorMessage("이메일 또는 패스워드가 다릅니다.");
         }
+    }
+
+    private bool HasEmptyFields(String email, String password)
+    {
+        return email == "" || password == "";
     }
 
     private bool HasNoAccount(String email, String password)
@@ -49,10 +64,10 @@ public class LoginManager : MonoBehaviour
         return email == "" && password == "";
     }
 
-    private void ShowNoAccountMessage()
+    private void ShowErrorMessage(String errorMessage)
     {
         error.enabled = true;
-        error.text = "계정이 없습니다. 회원가입을 먼저 진행해주세요.";
+        error.text = errorMessage;
     }
 
     void OnDestroy()

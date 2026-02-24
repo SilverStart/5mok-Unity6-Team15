@@ -1,5 +1,7 @@
 using common;
+
 using TMPro;
+
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -69,7 +71,8 @@ public class SignUpManager : MonoBehaviour
     private void DoSignUp()
     {
         PlayerPrefs.SetString("email", email.text);
-        PlayerPrefs.SetString("password", password.text);
+        PlayerPrefs.SetString("password", AESCrypto.Encrypt(password.text));
+        PlayerPrefs.Save();
 
         successPanel.SetActive(true);
     }
