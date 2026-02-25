@@ -18,13 +18,18 @@ public class SignUpManager : MonoBehaviour
     [SerializeField] private GameObject successPanel;
     [SerializeField] private Button goToLoginButton;
 
+    public void GoToLogin()
+    {
+        SceneManager.LoadScene((int)Constants.SceneName.Login);
+    }
+
     void Start()
     {
         email.onValueChanged.AddListener((_) => error.enabled = false);
         password.onValueChanged.AddListener((_) => error.enabled = false);
         passwordConfirm.onValueChanged.AddListener((_) => error.enabled = false);
         signUpButton.onClick.AddListener(SignUp);
-        goToLoginButton.onClick.AddListener(() => { SceneManager.LoadScene((int)Constants.SceneName.Login); });
+        goToLoginButton.onClick.AddListener(GoToLogin);
     }
 
     private void SignUp()
