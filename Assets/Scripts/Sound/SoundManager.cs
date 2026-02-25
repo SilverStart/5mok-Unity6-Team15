@@ -36,6 +36,16 @@ public class SoundManager : MonoBehaviour
         bgmSource.Play();
     }
 
+    public void PlayBGM(string clipName)
+    {
+        var bgmClip = LoadClip(clipName, SoundType.BGM);
+
+        if (bgmClip == null)
+            return;
+
+        PlayBGM(bgmClip);
+    }
+
     /// <summary>
     /// 효과음 재생 함수
     /// </summary>
@@ -43,6 +53,15 @@ public class SoundManager : MonoBehaviour
     public void PlaySFX(AudioClip clip)
     {
         sfxSource.PlayOneShot(clip);
+    }
+
+    public void PlaySFX(string clipName)
+    {
+        var sfxClip = LoadClip(clipName, SoundType.SFX);
+
+        if (sfxClip == null) return;
+
+        PlaySFX(sfxClip);
     }
 
     public void StopBGM()
