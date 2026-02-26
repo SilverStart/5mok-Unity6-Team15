@@ -844,12 +844,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7d6071be3e994d48a36bb89a4213899, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  blackOverlay: {fileID: 1035963990537859497}
+  blackOverlay: {fileID: 328739499687339598}
   blackText: {fileID: 1970889140719989361}
   blackTimer: {fileID: 7387821940871643865}
-  whiteOverlay: {fileID: 0}
-  whiteText: {fileID: 0}
-  whiteTimer: {fileID: 0}
+  whiteOverlay: {fileID: 3094887897047860883}
+  whiteText: {fileID: 5094044746168997316}
+  whiteTimer: {fileID: 5102572903148755502}
+  turnTimeLimit: 20
+  OnTurnTimeOver:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &4878334688792893296
 GameObject:
   m_ObjectHideFlags: 0

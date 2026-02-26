@@ -1,5 +1,8 @@
 using TMPro;
+
 using UnityEngine;
+using UnityEngine.Events;
+
 using static common.Constants;
 
 public class TimerUIManger : MonoBehaviour
@@ -12,10 +15,34 @@ public class TimerUIManger : MonoBehaviour
     [SerializeField] private TextMeshProUGUI whiteText;
     [SerializeField] private TextMeshProUGUI whiteTimer;
 
-    public void Init(float timeLimit)
+    [Header("Settings")]
+    [SerializeField] private float turnTimeLimit = 60f;
+
+    public UnityEvent<StoneColor> OnTurnTimeOver;
+
+    private StoneColor currentTurn;
+    private float remainingTime;
+    private bool isRunning;
+
+    void Start()
+    {
+        Init(turnTimeLimit);
+    }
+
+    public void StartTimer(StoneColor startingColor)
+    {
+        ChangeTurn(startingColor);
+    }
+
+    private void Init(float timeLimit)
     {
         blackTimer.text = CalculateTime(timeLimit);
         whiteTimer.text = CalculateTime(timeLimit);
+    }
+
+    public void SwitchTurn()
+    {
+        ChangeTurn(currentTurn == StoneColor.Black ? StoneColor.White : StoneColor.Black);
     }
 
     public void ChangeTurn(StoneColor color)
@@ -31,9 +58,41 @@ public class TimerUIManger : MonoBehaviour
         whiteText.text = isBlackTurn ? "White" : "White's Turn";
         whiteText.color = isBlackTurn ? Color.gray : Color.green;
         whiteTimer.color = isBlackTurn ? Color.gray : Color.white;
+
+        Init(turnTimeLimit);
+        currentTurn = color;
+        remainingTime = turnTimeLimit;
+        isRunning = true;
     }
 
-    public void SetTime(StoneColor color, float time)
+    public void StopTimer()
+    {
+        isRunning = false;
+    }
+
+    void Update()
+    {
+        if (!isRunning) return;
+
+        remainingTime -= Time.deltaTime;
+
+        if (remainingTime <= 0f)
+        {
+            remainingTime = 0f;
+            isRunning = false;
+            SetTime(currentTurn, remainingTime);
+
+            StoneColor nextTurn = (currentTurn == StoneColor.Black)
+                ? StoneColor.White
+                : StoneColor.Black;
+            OnTurnTimeOver?.Invoke(nextTurn);
+            return;
+        }
+
+        SetTime(currentTurn, remainingTime);
+    }
+
+    private void SetTime(StoneColor color, float time)
     {
         if (color == StoneColor.Black) blackTimer.text = CalculateTime(time);
         else if (color == StoneColor.White) whiteTimer.text = CalculateTime(time);
