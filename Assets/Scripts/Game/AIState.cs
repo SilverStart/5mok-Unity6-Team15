@@ -31,7 +31,7 @@ public class AIState : BaseState
             }
             else
             {
-                _gameLogic.Resigne(_color);
+                _gameLogic.Resign(_color);
                 break;
             }
         }

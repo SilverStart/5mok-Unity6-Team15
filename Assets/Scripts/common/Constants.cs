@@ -9,6 +9,13 @@
             None,
         }
 
+        public enum GameType
+        {
+            SinglePlayBlack,
+            SinglePlayWhite,
+            DualPlay,
+        }
+
         public const int BOARD_SIZE = 15;
     }
 }

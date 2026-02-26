@@ -104,7 +104,7 @@ public class GameLogic
         });
     }
 
-    public void Resigne(StoneColor color)
+    public void Resign(StoneColor color)
     {
         if (color == StoneColor.Black)
             EndGame(GameResult.Win);
