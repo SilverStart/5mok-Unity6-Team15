@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,12 +10,15 @@ using static common.Constants;
 
 public class OmokAI
 {
-    private const int MAX_DEPTH = 3;
-    private const int MAX_SCORE = 10000000;
-    private const int MAX_CANDIDATES = 25;
-    private const int DEFENSE_MULTIPLIER = 2;
+    private const int MAX_DEPTH = 3;            // 최대 깊이
+    private const int MAX_SCORE = 10000000;     // 최대 점수
+    private const int MAX_CANDIDATES = 25;      // 최대 후보 수
+    private const int DEFENSE_MULTIPLIER = 2;   // 방어 가중치 계수
+    private const int LIMIT_TIME = 20000;       // 계산 제한 시간 (ms) 
     private PatternAnalyzer patternAnalyzer = new();
     private StoneColor stoneColor = StoneColor.None;
+
+    private int startTime = 0;
 
     private int minimaxCount = 0;
     private int totalMinimaxCount = 0;
@@ -30,7 +34,9 @@ public class OmokAI
     {
         Debug.Log($"AI: 최적의 수를 찾는 중...");
 
-        float time = Time.time;
+        startTime = Environment.TickCount;
+
+        float time = Time.time; // For Debug Log
 
         // 백그라운드 스레드에서 실행
         var result = await Task.Run(() => 
@@ -46,6 +52,13 @@ public class OmokAI
             Debug.Log($"AI: 유효한 위치 수: {validPositions.Count}");
             for (int i = 0; i < validPositions.Count; i++)
             {
+                // 탐색 제한 시간 초과 시 종료
+                if (Environment.TickCount - startTime > LIMIT_TIME)
+                {
+                    Debug.Log($"AI: 탐색 제한 시간 초과, 종료");
+                    break;
+                }
+
                 var (row, col, score) = validPositions[i];
                 board[row, col] = stoneColor;
 
@@ -85,6 +98,8 @@ public class OmokAI
 
         Debug.Log($"AI: 최적의 수를 찾는데 걸린 시간: {(Time.time - time):F2}초, 놓은 자리: {result?.row}, {result?.col}");
 
+        startTime = 0;
+
         return result;
     }
 
@@ -105,6 +120,10 @@ public class OmokAI
 
         // depth가 MAX_DEPTH에 도달하면 평가 함수를 통해 점수를 반환
         if (depth >= MAX_DEPTH)
+            return EvalBoard(board);
+        
+        // 탐색 제한 시간 초과 시 평가 함수를 통해 점수를 반환
+        if (Environment.TickCount - startTime > LIMIT_TIME)
             return EvalBoard(board);
 
         if (isMaximizing)   // AI의 턴
