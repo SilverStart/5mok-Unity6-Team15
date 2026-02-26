@@ -27,9 +27,9 @@ Transform:
   m_GameObject: {fileID: 7590587062553245635}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.45, y: 1.45, z: 1.45}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: 0.4281, y: -0.2184, z: 0}
+  m_LocalScale: {x: 1.1, y: 1.1, z: 1.1}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -102,5 +102,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   blackStonePrefab: {fileID: 953439876500560793, guid: e7f2396cf93bb6c4faa391ab72839cf3, type: 3}
   whiteStonePrefab: {fileID: 8261929287028823237, guid: 095bf72fd2d51434a90a8766f3c5f87f, type: 3}
+  markerXPrefab: {fileID: 0}
+  lastStoneMarker: {fileID: 0}
   startPoint: {fileID: 0}
   cellSize: 0.428
+  positionSelector: {fileID: 0}
