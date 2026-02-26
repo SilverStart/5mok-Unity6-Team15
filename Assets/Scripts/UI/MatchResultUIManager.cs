@@ -21,11 +21,11 @@ public class MatchResultUIManager : MonoBehaviour
         dim.gameObject.SetActive(true);
         resultImage.sprite = victorySprite;
         resultText.text = "Victory";
+        resultText.color = Color.white;
         matchCompleteText.text = "Match Complete";
-        matchCompleteText.color = Color.white;
-        if (ColorUtility.TryParseHtmlString("#FF5733", out Color completeColor))
+        if (ColorUtility.TryParseHtmlString("#13EC5B", out Color victoryColor))
         {
-            matchCompleteText.color = completeColor; // 변환 성공 시 색상 적용!
+            matchCompleteText.color = victoryColor;
         }
     }
 
@@ -36,12 +36,12 @@ public class MatchResultUIManager : MonoBehaviour
         resultText.text = "Defeat";
         if (ColorUtility.TryParseHtmlString("#ef4444d5", out Color defeatColor))
         {
-            resultText.color = defeatColor; // 변환 성공 시 색상 적용!
+            resultText.color = defeatColor;
         }
         matchCompleteText.text = "Match Complete";
         if (ColorUtility.TryParseHtmlString("#ffffff9a", out Color completeColor))
         {
-            matchCompleteText.color = completeColor; // 변환 성공 시 색상 적용!
+            matchCompleteText.color = completeColor;
         }
     }
 
