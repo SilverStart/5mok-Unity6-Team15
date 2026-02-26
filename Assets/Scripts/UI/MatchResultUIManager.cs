@@ -1,8 +1,7 @@
-using System;
-
 using TMPro;
 
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class MatchResultUIManager : MonoBehaviour
@@ -14,7 +13,7 @@ public class MatchResultUIManager : MonoBehaviour
     [SerializeField] private Sprite victorySprite;
     [SerializeField] private Sprite defeatSprite;
 
-    public event Action OnClickRematch;
+    public UnityEvent OnClickRematch;
 
     public void Victory()
     {

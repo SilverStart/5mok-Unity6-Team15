@@ -29,11 +29,6 @@ public class TimerUIManger : MonoBehaviour
         Init(turnTimeLimit);
     }
 
-    public void StartTimer(StoneColor startingColor)
-    {
-        ChangeTurn(startingColor);
-    }
-
     private void Init(float timeLimit)
     {
         blackTimer.text = CalculateTime(timeLimit);
