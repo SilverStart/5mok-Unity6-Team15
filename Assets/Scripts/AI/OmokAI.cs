@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Unity.Collections;
 using UnityEngine;
 using UnityEngine.Pool;
 using UnityEngine.Rendering.Universal;
@@ -8,18 +10,23 @@ using static common.Constants;
 
 public class OmokAI
 {
-    private const int MAX_DEPTH = 3;
-    private const int MAX_SCORE = 10000000;
-    private const int MAX_CANDIDATES = 25;
-    private const int DEFENSE_MULTIPLIER = 2;
+    private const int MAX_DEPTH = 3;            // 최대 깊이
+    private const int MAX_SCORE = 10000000;     // 최대 점수
+    private const int MAX_CANDIDATES = 25;      // 최대 후보 수
+    private const int DEFENSE_MULTIPLIER = 2;   // 방어 가중치 계수
+    private const int LIMIT_TIME = 20000;       // 계산 제한 시간 (ms) 
     private PatternAnalyzer patternAnalyzer = new();
-    private StoneColor stoneColor;
+    private StoneColor stoneColor = StoneColor.None;
+
+    private int startTime = 0;
 
     private int minimaxCount = 0;
     private int totalMinimaxCount = 0;
 
-    public void SetStoneColor(StoneColor color)
+    public OmokAI(StoneColor color)
     {
+        Debug.Assert(color != StoneColor.None, "AI: 돌 색상을 설정해주세요.");
+
         stoneColor = color;
     }
 
@@ -27,7 +34,9 @@ public class OmokAI
     {
         Debug.Log($"AI: 최적의 수를 찾는 중...");
 
-        float time = Time.time;
+        startTime = Environment.TickCount;
+
+        float time = Time.time; // For Debug Log
 
         // 백그라운드 스레드에서 실행
         var result = await Task.Run(() => 
@@ -43,6 +52,13 @@ public class OmokAI
             Debug.Log($"AI: 유효한 위치 수: {validPositions.Count}");
             for (int i = 0; i < validPositions.Count; i++)
             {
+                // 탐색 제한 시간 초과 시 종료
+                if (Environment.TickCount - startTime > LIMIT_TIME)
+                {
+                    Debug.Log($"AI: 탐색 제한 시간 초과, 종료");
+                    break;
+                }
+
                 var (row, col, score) = validPositions[i];
                 board[row, col] = stoneColor;
 
@@ -82,6 +98,8 @@ public class OmokAI
 
         Debug.Log($"AI: 최적의 수를 찾는데 걸린 시간: {(Time.time - time):F2}초, 놓은 자리: {result?.row}, {result?.col}");
 
+        startTime = 0;
+
         return result;
     }
 
@@ -102,6 +120,10 @@ public class OmokAI
 
         // depth가 MAX_DEPTH에 도달하면 평가 함수를 통해 점수를 반환
         if (depth >= MAX_DEPTH)
+            return EvalBoard(board);
+        
+        // 탐색 제한 시간 초과 시 평가 함수를 통해 점수를 반환
+        if (Environment.TickCount - startTime > LIMIT_TIME)
             return EvalBoard(board);
 
         if (isMaximizing)   // AI의 턴
@@ -177,7 +199,6 @@ public class OmokAI
         return score;
     }
 
-    // TODO) 외부에서 제공하는 금주 함수를 사용하여 valid의 조건을 충족하는지도 확인할 예정
     private bool IsNearStone(int row, int col, StoneColor[,] board)
     {
         if (row < 0 || row >= board.GetLength(0) || col < 0 || col >= board.GetLength(1))
@@ -228,7 +249,27 @@ public class OmokAI
             return new List<(int row, int col, int score)> { (rows / 2, cols / 2, 0) };
         }
 
-        // 2) 즉시 승리 위치 우선 수집집
+        var winMoves = MakeWinMoves(candidates, board);
+        if (winMoves.Count > 0)
+            return winMoves;
+
+        var blockMoves = MakeBlockMoves(candidates, board);
+        if (blockMoves.Count > 0)
+            return blockMoves;
+
+        // 렌주 룰에 의한 후보 제거
+        candidates.RemoveAll(x => !OmokRules.IsValidMove(x.row, x.col, stoneColor, board));
+
+        candidates.Sort((a, b) => b.score.CompareTo(a.score));
+
+        if (candidates.Count > MAX_CANDIDATES)
+            candidates.RemoveRange(MAX_CANDIDATES, candidates.Count - MAX_CANDIDATES);
+
+        return candidates;
+    }
+
+    private List<(int row, int col, int score)> MakeWinMoves(List<(int row, int col, int score)> candidates, StoneColor[,] board)
+    {
         var winMoves = new List<(int row, int col, int score)>();
         for (int i = 0; i < candidates.Count; i++)
         {
@@ -241,12 +282,12 @@ public class OmokAI
             board[r, c] = StoneColor.None;
         }
 
-        if (winMoves.Count > 0)
-        {
-            winMoves.Sort((a, b) => b.score.CompareTo(a.score));
-            return winMoves;
-        }
+        winMoves.Sort((a, b) => b.score.CompareTo(a.score));
+        return winMoves;
+    }
 
+    private List<(int row, int col, int score)> MakeBlockMoves(List<(int row, int col, int score)> candidates, StoneColor[,] board)
+    {
         StoneColor enemy = stoneColor == StoneColor.White ? StoneColor.Black : StoneColor.White;
 
         // 3) 즉시 패배 방지 위치 우선 수집집
@@ -262,18 +303,7 @@ public class OmokAI
             board[r, c] = StoneColor.None;
         }
 
-        if (blockMoves.Count > 0)
-        {
-            Debug.Log($"AI: 블로킹 위치 수: {blockMoves.Count}");
-            blockMoves.Sort((a, b) => b.score.CompareTo(a.score));
-            return blockMoves;
-        }
-
-        candidates.Sort((a, b) => b.score.CompareTo(a.score));
-
-        if (candidates.Count > MAX_CANDIDATES)
-            candidates.RemoveRange(MAX_CANDIDATES, candidates.Count - MAX_CANDIDATES);
-
-        return candidates;
+        blockMoves.Sort((a, b) => b.score.CompareTo(a.score));
+        return blockMoves;
     }
 }
