@@ -14,9 +14,6 @@ public class GameLogic
     // 현재 상태를 나타내는 변수
     private BaseState _currentState;
 
-    // 게임의 결과
-    public enum GameResult { None, Win, Lose, Draw }
-
     public GameLogic(GameType gameType)
     {
         _board = new();
@@ -87,10 +84,10 @@ public class GameLogic
         string resultStr = "";
         switch (gameResult)
         {
-            case GameResult.Win:
+            case GameResult.BlackWin:
                 resultStr = "Player1 승리!";
                 break;
-            case GameResult.Lose:
+            case GameResult.WhiteWin:
                 resultStr = "Player2 승리!";
                 break;
             case GameResult.Draw:
@@ -98,22 +95,22 @@ public class GameLogic
                 break;
         }
 
-        GameManager.Instance.OpenConfirmPanel(resultStr, () =>
-        {
-            GameManager.Instance.ChangeToMainScene();
-        });
+        // GameManager.Instance.OpenConfirmPanel(resultStr, () =>
+        // {
+        //     GameManager.Instance.ChangeToMainScene();
+        // });
     }
 
     public void Resign(StoneColor color)
     {
         if (color == StoneColor.Black)
-            EndGame(GameResult.Win);
+            EndGame(GameResult.WhiteWin);
         if (color == StoneColor.White)
-            EndGame(GameResult.Lose);
+            EndGame(GameResult.BlackWin);
     }
 
-    public async Task<(int x, int y)?> GetAIMove(StoneColor color)
-    {
-        return await _omokAI.MakeBestMove(_board.Board);
-    }
+    // public async Task<(int x, int y)?> GetAIMove(StoneColor color)
+    // {
+    //     // return await _omokAI.MakeBestMove(_board.Board);
+    // }
 }

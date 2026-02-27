@@ -16,6 +16,9 @@
             DualPlay,
         }
 
+        // 게임의 결과
+        public enum GameResult { None, BlackWin, WhiteWin, Draw };
+
         public const int BOARD_SIZE = 15;
     }
 }
