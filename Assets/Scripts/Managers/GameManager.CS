@@ -1,92 +1,77 @@
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
+using static common.Constants;
 
-public enum PlayerTurn { Black, White, None }
 public enum GameState { Ready, Playing, GameOver }
 
-public class GameManager : MonoBehaviour
+public class GameManager : Singleton<GameManager>
 {
-    public static GameManager Instance;
+    [SerializeField] private SoundManager soundManager;
+    [SerializeField] private BoardRenderer boardRenderer;
+    [SerializeField] private InputController inputController;
 
-    [Header("Game Settings")]
-    public float maxTime = 30f; // 턴 당 제한시간 (30초)
+    private Canvas _canvas;
 
-    [Header("Current Status")]
-    public PlayerTurn currentTurn;
-    public GameState currentState;
-    public float currentTime;
+    // Game Logic
+    private GameLogic _gameLogic;
 
-    public UnityEvent<float> OnTimerUpdate; // 시간 갱신 알림
-    public UnityEvent<PlayerTurn> OnTurnChanged; // 턴 변경 알림
-    public UnityEvent<string> OnGameOver; // 게임 오버 알림
+    private TimerUIManager _timerUIManager;
 
-    void Awake()
+    // 게임의 종류
+    private GameType _gameType;
+
+    protected override void OnSceneLoad(Scene scene, LoadSceneMode mode)
     {
-        if (Instance == null)
+        if (scene.buildIndex == (int)SceneName.InGame)
         {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else Destroy(gameObject);
-    }
 
-    void Start()
-    {
-        StartGame();
-    }
+            // 새로운 씬에서 Canvas 참조 가져오기
+            _canvas = FindFirstObjectByType<Canvas>();
 
-    void Update()
-    {
-        if (currentState == GameState.Playing)
-        {
-            HandleTimer();
+            _timerUIManager = FindFirstObjectByType<TimerUIManager>();
+
+            // TODO: 게임 타입 설정 팝업 창 띄우기
         }
     }
 
-    // 게임 시작 초기화
-    public void StartGame()
+    public void OnGameStartClick(GameType gameType)
     {
-        currentState = GameState.Playing;
-        currentTurn = PlayerTurn.Black; // 흑돌 선
-        currentTime = maxTime;
-        
-        OnTurnChanged?.Invoke(currentTurn);
-        OnTimerUpdate?.Invoke(currentTime / maxTime);
+        _gameType = gameType;
+        _gameLogic = new GameLogic(_gameType);
+        _gameLogic.OnStonePlaced += (x, y, color) => {
+            soundManager.PlaySFX("PlaceStoneSound");
+            boardRenderer.PlaceStoneObj(x, y, color);
+        };
+        _timerUIManager.OnTurnTimeOver += _gameLogic.TimeOver;
+        inputController.OnClick += _gameLogic.SetInputResult;
+        soundManager.PlayBGM("GameBGM");
     }
 
-    // 타이머 로직
-    void HandleTimer()
+    public void GameOver(string resultStr)
     {
-        currentTime -= Time.deltaTime;
-        
-        // UI 매니저에게 남은 시간 비율(0.0 ~ 1.0) 전달
-        OnTimerUpdate?.Invoke(Mathf.Clamp01(currentTime / maxTime));
-
-        if (currentTime <= 0)
-        {
-            // 시간 초과 처리 (상대방 승리 혹은 턴 넘기기 등 규칙에 따라)
-            GameOver(currentTurn == PlayerTurn.Black ? PlayerTurn.White : PlayerTurn.Black);
-        }
+        // TODO: 게임 결과 팝업 창 띄우기
+        // GameManager.Instance.OpenConfirmPanel(resultStr, () =>
+        // {
+        //     GameManager.Instance.RestartGame();
+        // });
     }
 
-    // 턴 넘기기 (돌을 두는 팀원이 이 함수를 호출해야 함)
-    public void SwitchTurn()
+    public void RestartGame()
     {
-        if (currentState != GameState.Playing) return;
-
-        currentTime = maxTime; // 시간 초기화
-        currentTurn = (currentTurn == PlayerTurn.Black) ? PlayerTurn.White : PlayerTurn.Black;
-        
-        OnTurnChanged?.Invoke(currentTurn); // 턴 변경 알림
+        SceneManager.LoadScene((int)SceneName.InGame);
     }
 
-    // 게임 오버 처리
-    public void GameOver(PlayerTurn winner)
+    // TimerUI 업데이트
+    public void SetGameTurn(StoneColor color)
     {
-        currentState = GameState.GameOver;
-        string winnerMsg = (winner == PlayerTurn.Black) ? "Black Wins!" : "White Wins!";
-        Debug.Log(winnerMsg);
-        
-        OnGameOver?.Invoke(winnerMsg);
+        _timerUIManager.ChangeTurn(color);
+    }
+
+    public void ChangeToLoginScene()
+    {
+        _gameLogic?.Dispose();
+        _gameLogic = null;
+        SceneManager.LoadScene((int)SceneName.Login);
     }
 }
