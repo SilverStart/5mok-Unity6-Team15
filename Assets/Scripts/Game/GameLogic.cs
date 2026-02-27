@@ -19,7 +19,7 @@ public class GameLogic
 
     public GameLogic(GameType gameType)
     {
-        _board = new(15, 15);
+        _board = new();
         _omokAI = new();
 
         switch(gameType)
@@ -44,14 +44,14 @@ public class GameLogic
 
     private async void SetState(BaseState newState)
     {
-        _currentState?.OnEnter();
+        _currentState?.OnExit();
         _currentState = newState;
         await _currentState.OnEnter();
     }
 
     public bool PlaceStone(int x, int y, StoneColor color)
     {
-        if (_board.isValidMove(x, y, color))
+        if (_board.IsValidMove(x, y, color))
         {
             // 정상적인 위치일 때
             // TODO: 돌 렌더링 하기
