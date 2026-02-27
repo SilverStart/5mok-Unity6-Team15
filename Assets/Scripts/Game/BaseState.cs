@@ -12,6 +12,7 @@ public abstract class BaseState
     public abstract void HandleMove(int x, int y);        // 플레이어 이동 처리
     public abstract void OnExit();                       // 상태 종료 시 호출
     public abstract void HandleNextTurn();               // 다음 턴 처리 
+    public abstract void SetInputResult(PlayerInput input); // 입력 처리
 
     public void ProcessMove(int x, int y)
     {
@@ -19,7 +20,7 @@ public abstract class BaseState
         {
             isValidMove = true;
             var gameResult = _gameLogic.CheckGameResult();
-            if (gameResult == GameLogic.GameResult.None)
+            if (gameResult == GameResult.None)
             {
                 // 턴 전환
                 HandleNextTurn();

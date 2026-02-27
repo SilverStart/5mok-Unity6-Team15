@@ -69,6 +69,6 @@ public partial class BoardData
     public (int x, int y)? LastMove()
     {
         byte move = _lastMove.GetLastMove();
-        return (move < 0) ? null : (GetX(move), GetY(move));
+        return (move == PASS) ? null : (GetX(move), GetY(move));
     }
 }

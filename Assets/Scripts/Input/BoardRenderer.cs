@@ -38,6 +38,7 @@ public class BoardRenderer : MonoBehaviour
 
     public void PlaceMarkerX(int x, int y)
     {
+        HidePositionToPlaceStoneMarker();
         Vector3 spawnPosition = GetWorldPosition(x, y);
 
         Instantiate(markerXPrefab, spawnPosition, Quaternion.identity, transform);

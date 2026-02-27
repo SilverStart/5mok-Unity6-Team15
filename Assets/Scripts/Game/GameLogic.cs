@@ -1,9 +1,14 @@
+using System;
 using System.Threading.Tasks;
 using UnityEngine;
 using static common.Constants;
 
 public class GameLogic
 {
+    public Action<int, int, StoneColor> OnStonePlaced;
+    public Action<int, int> OnUndo;
+    public Action<int, int> OnPlaceX;
+
     private BoardData _board;
     private OmokAI _omokAI;
 
@@ -17,19 +22,18 @@ public class GameLogic
     public GameLogic(GameType gameType)
     {
         _board = new();
-        _omokAI = new();
 
         switch(gameType)
         {
             case GameType.SinglePlayBlack:
                 blackState = new PlayerState(StoneColor.Black, this);
                 whiteState = new AIState(StoneColor.White, this);
-                _omokAI.SetStoneColor(StoneColor.White);
+                _omokAI = new(StoneColor.White);
                 break;
             case GameType.SinglePlayWhite:
                 blackState = new AIState(StoneColor.Black, this);
                 whiteState = new PlayerState(StoneColor.White, this);
-                _omokAI.SetStoneColor(StoneColor.Black);
+                _omokAI = new(StoneColor.Black);
                 break;
             case GameType.DualPlay:
                 blackState = new PlayerState(StoneColor.Black, this);
@@ -51,7 +55,7 @@ public class GameLogic
         if (_board.IsValidMove(x, y, color))
         {
             // 정상적인 위치일 때
-            // TODO: 돌 렌더링 하기
+            OnStonePlaced?.Invoke(x, y, color);
             _board.SetStone(x, y, color);
             return true;
         }
@@ -72,6 +76,11 @@ public class GameLogic
         {
             SetState(blackState);
         }
+    }
+
+    public void SetInputResult(PlayerInput input)
+    {
+        _currentState.SetInputResult(input);
     }
 
     public GameResult CheckGameResult()
@@ -95,10 +104,15 @@ public class GameLogic
                 break;
         }
 
-        // GameManager.Instance.OpenConfirmPanel(resultStr, () =>
-        // {
-        //     GameManager.Instance.ChangeToMainScene();
-        // });
+        GameManager.Instance.GameOver(resultStr);
+    }
+
+    public void TimeOver(StoneColor color)
+    {
+        if (color == StoneColor.Black)
+            EndGame(GameResult.WhiteWin);
+        if (color == StoneColor.White)
+            EndGame(GameResult.BlackWin);
     }
 
     public void Resign(StoneColor color)
@@ -109,8 +123,28 @@ public class GameLogic
             EndGame(GameResult.BlackWin);
     }
 
-    // public async Task<(int x, int y)?> GetAIMove(StoneColor color)
-    // {
-    //     // return await _omokAI.MakeBestMove(_board.Board);
-    // }
+    public bool Undo()
+    {
+        var move = _board.LastMove();
+        if (move.HasValue)
+        {
+            OnUndo?.Invoke(move.Value.x, move.Value.y);
+            _board.Undo();
+            return true;
+        }
+
+        return false;
+    }
+
+    // TODO: BoardData객체의 참조를 넘기는 방식으로 수정해야 함
+    public async Task<(int x, int y)?> GetAIMove(StoneColor color)
+    {
+        // return await _omokAI.MakeBestMove(_board);
+        return null;
+    }
+
+    public void Dispose()
+    {
+        
+    }
 }
