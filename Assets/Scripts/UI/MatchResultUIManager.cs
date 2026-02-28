@@ -1,36 +1,37 @@
+using System;
 using TMPro;
 
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-public class MatchResultUIManager : MonoBehaviour
+public class MatchResultUIManager : PanelController
 {
-    [SerializeField] private Transform dim;
     [SerializeField] private Image resultImage;
     [SerializeField] private TMP_Text resultText;
     [SerializeField] private TMP_Text matchCompleteText;
     [SerializeField] private Sprite victorySprite;
     [SerializeField] private Sprite defeatSprite;
 
-    public UnityEvent OnClickRematch;
+    public delegate void OnRematchButtonClicked();
+    private OnRematchButtonClicked _onRematchButtonClicked;
 
-    public void Victory()
+    public void Show(string resultStr, OnRematchButtonClicked onRematchButtonClicked = null)
     {
-        dim.gameObject.SetActive(true);
+        _onRematchButtonClicked = onRematchButtonClicked;
         resultImage.sprite = victorySprite;
-        resultText.text = "Victory";
+        resultText.text = resultStr;
         resultText.color = Color.white;
         matchCompleteText.text = "Match Complete";
         if (ColorUtility.TryParseHtmlString("#13EC5B", out Color victoryColor))
         {
             matchCompleteText.color = victoryColor;
         }
+        Show();
     }
 
     public void Defeat()
     {
-        dim.gameObject.SetActive(true);
         resultImage.sprite = defeatSprite;
         resultText.text = "Defeat";
         if (ColorUtility.TryParseHtmlString("#ef4444d5", out Color defeatColor))
@@ -46,7 +47,9 @@ public class MatchResultUIManager : MonoBehaviour
 
     public void OnClickRematchButton()
     {
-        OnClickRematch?.Invoke();
-        dim.gameObject.SetActive(false);
+        Hide(() =>
+        {
+            _onRematchButtonClicked?.Invoke();
+        });
     }
 }

@@ -22,7 +22,7 @@ public class TimerUIManager : MonoBehaviour
 
     private StoneColor currentTurn;
     private float remainingTime;
-    private bool isRunning;
+    private bool isRunning = false;
 
     void Start()
     {
