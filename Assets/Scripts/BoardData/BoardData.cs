@@ -45,11 +45,17 @@ public partial class BoardData
         return true;
     }
 
+    public bool CheckWin(int x, int y, StoneColor color)
+    {
+        if (_layer3[ColorToLayer(color)][GetP(x, y)] == FMP_5) return true;
+
+        return false;
+    }
+
     public GameResult CheckGameEnd()
     {
-        int total = _lastMove.GetTotal();
-        byte side = (byte)(total % 2);
         byte p = _lastMove.GetLastMove();
+        byte side = _layer1[p];
 
         RemoveStone();
         if (_layer3[side][p] == FMP_5)
@@ -70,5 +76,10 @@ public partial class BoardData
     {
         byte move = _lastMove.GetLastMove();
         return (move == PASS) ? null : (GetX(move), GetY(move));
+    }
+
+    public int GetLength(int i)
+    {
+        return BOARD_SIZE;
     }
 }
