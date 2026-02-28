@@ -94,13 +94,13 @@ public class GameLogic
         switch (gameResult)
         {
             case GameResult.BlackWin:
-                resultStr = "Player1 승리!";
+                resultStr = "Black Win!";
                 break;
             case GameResult.WhiteWin:
-                resultStr = "Player2 승리!";
+                resultStr = "White Win!";
                 break;
             case GameResult.Draw:
-                resultStr = "무승부";
+                resultStr = "Draw";
                 break;
         }
 
@@ -145,6 +145,5 @@ public class GameLogic
 
     public void Dispose()
     {
-        
     }
 }

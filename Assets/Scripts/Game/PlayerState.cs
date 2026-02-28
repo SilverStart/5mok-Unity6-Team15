@@ -23,6 +23,7 @@ public class PlayerState : BaseState
     {
         // OX UI 업데이트
         GameManager.Instance.SetGameTurn(_color);
+        isValidMove = false;
 
         // 상태 진입 시 로직 구현
         while (!isValidMove)
@@ -36,7 +37,7 @@ public class PlayerState : BaseState
                     // 블록이 클릭되었을 때 처리할 로직
                     HandleMove(input.x, input.y);
                     break;
-                case InputType.Surrender:
+                case InputType.Resign:
                     // 항복
                     _gameLogic.Resign(_color);
                     return;
@@ -56,7 +57,7 @@ public class PlayerState : BaseState
                         break;
                     }
             }
-
+            _inputTcs = null;
         }
     }
 
@@ -72,5 +73,7 @@ public class PlayerState : BaseState
 
     public override void OnExit()
     {
+        _inputTcs?.TrySetCanceled();
+        _inputTcs = null;
     }
 }

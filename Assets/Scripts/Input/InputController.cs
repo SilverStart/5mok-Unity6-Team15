@@ -12,6 +12,8 @@ public class InputController : MonoBehaviour
 
     private Camera mainCamera;
     private int X, Y;
+    private bool isStoneReady = false;
+    private bool isRunning = false;
 
     void Awake()
     {
@@ -20,6 +22,8 @@ public class InputController : MonoBehaviour
 
     void Update()
     {
+        if (!isRunning) return;
+
         if (Input.GetMouseButtonDown(0))
         {
             if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
@@ -45,23 +49,33 @@ public class InputController : MonoBehaviour
             X = x;
             Y = y;
             boardRenderer.ShowPositionToPlaceStoneMarker(x, y);
+            isStoneReady = true;
             // TODO: ConfirmButton.SetActive(true);
         }
     }
 
-    public void OnButtonClick(InputType input)
+    public void SetRun(bool isRunning)
     {
-        switch (input)
-        {
-            case InputType.PlaceStone:
-                OnClick?.Invoke(PlayerInput.Move(X, Y));
-                return;
-            case InputType.Surrender:
-                OnClick?.Invoke(PlayerInput.Surrender());
-                return;
-            case InputType.Undo:
-                OnClick?.Invoke(PlayerInput.Undo());
-                return;
-        }
+        this.isRunning = isRunning;
+    }
+
+    public void OnUndoButtoneClick()
+    {
+        if (!isRunning) return;
+        OnClick?.Invoke(PlayerInput.Undo());
+    }
+
+    public void OnConfirmButtonClick()
+    {
+        if (!isRunning) return;
+        if (!isStoneReady) return;
+        OnClick?.Invoke(PlayerInput.Move(X, Y));
+        isStoneReady = false;
+    }
+
+    public void OnResignButtonClick()
+    {
+        if (!isRunning) return;
+        OnClick?.Invoke(PlayerInput.Resign());
     }
 }

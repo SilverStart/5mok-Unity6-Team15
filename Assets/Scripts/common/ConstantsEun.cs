@@ -4,9 +4,9 @@
     {
         public enum SceneName
         {
-            Login = 0,
-            InGame = 1,
             SignUp = 2,
+            InGame = 1,
+            Login = 0,
         }
     }
 }

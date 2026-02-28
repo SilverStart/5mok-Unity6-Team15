@@ -1,4 +1,4 @@
-public enum InputType { PlaceStone, Surrender, Undo }
+public enum InputType { PlaceStone, Resign, Undo }
 
 // 입력 결과를 담는 구조체
 public struct PlayerInput
@@ -9,6 +9,6 @@ public struct PlayerInput
 
     // 편의를 위한 생성자들
     public static PlayerInput Move(int x, int y) => new PlayerInput { Type = InputType.PlaceStone, x = x, y = y };
-    public static PlayerInput Surrender() => new PlayerInput { Type = InputType.Surrender };
+    public static PlayerInput Resign() => new PlayerInput { Type = InputType.Resign };
     public static PlayerInput Undo() => new PlayerInput { Type = InputType.Undo };
 }
