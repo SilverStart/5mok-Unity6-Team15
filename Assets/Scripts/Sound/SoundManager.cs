@@ -24,21 +24,21 @@ public class SoundManager : MonoBehaviour
     }
 
     /// <summary>
-    /// BGM Àç»ý ÇÔ¼ö
+    /// BGM ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½
     /// </summary>
-    /// <param name="clip">Àç»ý ½ÃÅ³ BGM Clip</param>
+    /// <param name="clip">ï¿½ï¿½ï¿½ ï¿½ï¿½Å³ BGM Clip</param>
     public void PlayBGM(AudioClip clip)
     {
         if (bgmSource.isPlaying)
             bgmSource.Stop();
-            
+
         bgmSource.clip = clip;
         bgmSource.Play();
     }
 
     public void PlayBGM(string clipName)
     {
-        var bgmClip = LoadClip(clipName, SoundType.BGM);
+        var bgmClip = LoadClip(clipName, "BGM");
 
         if (bgmClip == null)
             return;
@@ -47,9 +47,9 @@ public class SoundManager : MonoBehaviour
     }
 
     /// <summary>
-    /// È¿°úÀ½ Àç»ý ÇÔ¼ö
+    /// È¿ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½
     /// </summary>
-    /// <param name="clip">Àç»ý½ÃÅ³ È¿°úÀ½</param>
+    /// <param name="clip">ï¿½ï¿½ï¿½ï¿½ï¿½Å³ È¿ï¿½ï¿½ï¿½ï¿½</param>
     public void PlaySFX(AudioClip clip)
     {
         sfxSource.PlayOneShot(clip);
@@ -57,7 +57,7 @@ public class SoundManager : MonoBehaviour
 
     public void PlaySFX(string clipName)
     {
-        var sfxClip = LoadClip(clipName, SoundType.SFX);
+        var sfxClip = LoadClip(clipName, "SFX");
 
         if (sfxClip == null) return;
 
@@ -71,14 +71,14 @@ public class SoundManager : MonoBehaviour
     }
 
     /// <summary>
-    /// AudioClip Load ÇÔ¼ö
+    /// AudioClip Load ï¿½Ô¼ï¿½
     /// </summary>
-    /// <param name="clipName">·ÎµåÇÒ ClipÀÇ ÀÌ¸§</param>
-    /// <param name="soundType">·ÎµåÇÒ ClipÀÇ »ç¿îµå Å¸ÀÔ</param>
+    /// <param name="clipName">ï¿½Îµï¿½ï¿½ï¿½ Clipï¿½ï¿½ ï¿½Ì¸ï¿½</param>
+    /// <param name="soundType">ï¿½Îµï¿½ï¿½ï¿½ Clipï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½</param>
     /// <returns></returns>
-    public AudioClip LoadClip(string clipName, SoundType soundType)
+    public AudioClip LoadClip(string clipName, string soundType)
     {
-        string path = $"Sounds/{soundType}/{clipName}.mp3";
+        string path = $"Sounds/{soundType}/{clipName}";
 
         return Resources.Load<AudioClip>(path);
     }

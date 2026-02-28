@@ -48,9 +48,11 @@ public class GameManager : Singleton<GameManager>
         _gameType = gameType;
         _gameLogic = new GameLogic(_gameType);
         _gameLogic.OnStonePlaced += (x, y, color) => {
-            // soundManager.PlaySFX("PlaceStoneSound");
+            soundManager.PlaySFX("Place");
             _boardRenderer.PlaceStoneObj(x, y, color);
         };
+        _gameLogic.OnUndo += _boardRenderer.RemoveStoneObj;
+        _gameLogic.OnPlaceX += _boardRenderer.PlaceMarkerX;
         _timerUIManager.OnTurnTimeOver += _gameLogic.TimeOver;
         _inputController.OnClick += _gameLogic.SetInputResult;
         // soundManager.PlayBGM("GameBGM");
