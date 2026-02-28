@@ -274,12 +274,11 @@ public class OmokAI
         for (int i = 0; i < candidates.Count; i++)
         {
             var (r, c, score) = candidates[i];
-            board.SetStone(r, c, stoneColor);
 
             if (board.CheckWin(r, c, stoneColor))
+            {
                 winMoves.Add((r, c, score));
-
-            board.Undo();
+            }
         }
 
         winMoves.Sort((a, b) => b.score.CompareTo(a.score));
@@ -295,12 +294,11 @@ public class OmokAI
         for (int i = 0; i < candidates.Count; i++)
         {
             var (r, c, sc) = candidates[i];
-            board.SetStone(r, c, enemy);
 
             if (board.CheckWin(r, c, enemy))
+            {
                 blockMoves.Add((r, c, sc));
-
-            board.Undo();
+            }
         }
 
         blockMoves.Sort((a, b) => b.score.CompareTo(a.score));
