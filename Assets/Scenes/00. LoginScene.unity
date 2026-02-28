@@ -905,8 +905,8 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_Resource: {fileID: 8300000, guid: aaa8aaed02b76c741a26fe4cb42958a6, type: 3}
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -1216,7 +1216,7 @@ AudioSource:
   m_PlayOnAwake: 1
   m_Volume: 0.2
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
@@ -2986,10 +2986,6 @@ PrefabInstance:
       propertyPath: soundManager
       value: 
       objectReference: {fileID: 494956422}
-    - target: {fileID: 4057688874540110488, guid: fadaa5d5bb8daa542916855c0a156e13, type: 3}
-      propertyPath: gameTypePanelPrefab
-      value: 
-      objectReference: {fileID: 6855332544287931817, guid: b9c44c7c48591604385bf1e7cfc9dd1a, type: 3}
     - target: {fileID: 6160150309730162138, guid: fadaa5d5bb8daa542916855c0a156e13, type: 3}
       propertyPath: m_LocalPosition.x
       value: -2.1854846
