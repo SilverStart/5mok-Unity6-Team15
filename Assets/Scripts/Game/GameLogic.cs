@@ -110,9 +110,9 @@ public class GameLogic
     public void TimeOver(StoneColor color)
     {
         if (color == StoneColor.Black)
-            EndGame(GameResult.WhiteWin);
-        if (color == StoneColor.White)
             EndGame(GameResult.BlackWin);
+        if (color == StoneColor.White)
+            EndGame(GameResult.WhiteWin);
     }
 
     public void Resign(StoneColor color)
@@ -137,10 +137,9 @@ public class GameLogic
     }
 
     // TODO: BoardData객체의 참조를 넘기는 방식으로 수정해야 함
-    public async Task<(int x, int y)?> GetAIMove(StoneColor color)
+    public async Task<(int x, int y)?> GetAIMove()
     {
-        // return await _omokAI.MakeBestMove(_board);
-        return null;
+        return await _omokAI.MakeBestMove(_board);
     }
 
     public void Dispose()

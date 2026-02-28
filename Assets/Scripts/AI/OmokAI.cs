@@ -30,7 +30,7 @@ public class OmokAI
         stoneColor = color;
     }
 
-    public async Task<(int row, int col)?> MakeBestMove(StoneColor[,] board) // 인게임의 board를 전달받을 함수수
+    public async Task<(int row, int col)?> MakeBestMove(BoardData board) // 인게임의 board를 전달받을 함수수
     {
         Debug.Log($"AI: 최적의 수를 찾는 중...");
 
@@ -39,7 +39,7 @@ public class OmokAI
         float time = Time.time; // For Debug Log
 
         // 백그라운드 스레드에서 실행
-        var result = await Task.Run(() => 
+        var result = await Task.Run(() =>
         {
             (int row, int col)? bestMove = null;
 
@@ -60,7 +60,7 @@ public class OmokAI
                 }
 
                 var (row, col, score) = validPositions[i];
-                board[row, col] = stoneColor;
+                board.SetStone(row, col, stoneColor);
 
                 var scoreValue = Minimax(board, 0, false, alpha, beta, (row, col));
 
@@ -74,7 +74,7 @@ public class OmokAI
                     break;
                 }
 
-                board[row, col] = StoneColor.None; // 원상 복구 (백트래킹)
+                board.Undo();
 
                 if (scoreValue > bestScore)
                 {
@@ -103,7 +103,7 @@ public class OmokAI
         return result;
     }
 
-    private int Minimax(StoneColor[,] board, int depth, bool isMaximizing, float alpha, float beta, 
+    private int Minimax(BoardData board, int depth, bool isMaximizing, float alpha, float beta,
         (int x, int y)? lastMove = null)
     {
         minimaxCount++;
@@ -111,17 +111,17 @@ public class OmokAI
         StoneColor enemyColor = stoneColor == StoneColor.White ? StoneColor.Black : StoneColor.White;
 
         // 만약 Player_A(인간)이 승리했다면, -MAX_SCORE를 반환 -> AI입장에서 최악
-        if (OmokRules.CheckWin(lastMove.Value.x, lastMove.Value.y, enemyColor, board)) 
+        if (board.CheckWin(lastMove.Value.x, lastMove.Value.y, enemyColor))
             return -MAX_SCORE;
 
         // 만약 Player_B(AI)가 승리했다면, MAX_SCORE를 반환 -> AI입장에서 최적
-        if (OmokRules.CheckWin(lastMove.Value.x, lastMove.Value.y, stoneColor, board)) 
+        if (board.CheckWin(lastMove.Value.x, lastMove.Value.y, stoneColor))
             return MAX_SCORE;
 
         // depth가 MAX_DEPTH에 도달하면 평가 함수를 통해 점수를 반환
         if (depth >= MAX_DEPTH)
             return EvalBoard(board);
-        
+
         // 탐색 제한 시간 초과 시 평가 함수를 통해 점수를 반환
         if (Environment.TickCount - startTime > LIMIT_TIME)
             return EvalBoard(board);
@@ -135,11 +135,11 @@ public class OmokAI
             for (int i = 0; i < validPositions.Count; i++)
             {
                 var (row, col, score) = validPositions[i];
-                board[row, col] = stoneColor;
-                
+                board.SetStone(row, col, stoneColor);
+
                 var scoreValue = Minimax(board, depth + 1, false, alpha, beta, (row, col));
 
-                board[row, col] = StoneColor.None; // 원상 복구 (백트래킹)
+                board.Undo();
 
                 bestScore = Mathf.Max(bestScore, scoreValue);
                 alpha = Mathf.Max(alpha, bestScore);
@@ -158,11 +158,11 @@ public class OmokAI
             for (int i = 0; i < validPositions.Count; i++)
             {
                 var (row, col, score) = validPositions[i];
-                board[row, col] = stoneColor == StoneColor.White ? StoneColor.Black : StoneColor.White;
-                
+                board.SetStone(row, col, stoneColor == StoneColor.White ? StoneColor.Black : StoneColor.White);
+
                 var scoreValue = Minimax(board, depth + 1, true, alpha, beta, (row, col));
 
-                board[row, col] = StoneColor.None; // 원상 복구 (백트래킹)
+                board.Undo();
 
                 bestScore = Mathf.Min(bestScore, scoreValue);
                 beta = Mathf.Min(beta, bestScore);
@@ -175,7 +175,7 @@ public class OmokAI
         }
     }
 
-    private int EvalBoard(StoneColor[,] board)
+    private int EvalBoard(BoardData board)
     {
         int score = 0;
 
@@ -199,18 +199,18 @@ public class OmokAI
         return score;
     }
 
-    private bool IsNearStone(int row, int col, StoneColor[,] board)
+    private bool IsNearStone(int row, int col, BoardData board)
     {
         if (row < 0 || row >= board.GetLength(0) || col < 0 || col >= board.GetLength(1))
             return false;
-        
+
         for (int i = -1; i <= 1; i++)
         {
             for (int j = -1; j <= 1; j++)
             {
                 if (i == 0 && j == 0)
                     continue;
-                
+
                 if (row + i < 0 || row + i >= board.GetLength(0) || col + j < 0 || col + j >= board.GetLength(1))
                     continue;
 
@@ -222,7 +222,7 @@ public class OmokAI
         return false;
     }
 
-    private List<(int row, int col, int score)> GetValidPositions(StoneColor[,] board, (int x, int y)? lastMove = null)
+    private List<(int row, int col, int score)> GetValidPositions(BoardData board, (int x, int y)? lastMove = null)
     {
         int rows = board.GetLength(0);
         int cols = board.GetLength(1);
@@ -236,7 +236,7 @@ public class OmokAI
             {
                 if (board[r, c] != StoneColor.None)
                     continue;
-                
+
                 if (!IsNearStone(r, c, board))
                     continue;
 
@@ -244,7 +244,7 @@ public class OmokAI
             }
         }
 
-        if (candidates.Count == 0) 
+        if (candidates.Count == 0)
         {
             return new List<(int row, int col, int score)> { (rows / 2, cols / 2, 0) };
         }
@@ -258,7 +258,7 @@ public class OmokAI
             return blockMoves;
 
         // 렌주 룰에 의한 후보 제거
-        candidates.RemoveAll(x => !OmokRules.IsValidMove(x.row, x.col, stoneColor, board));
+        candidates.RemoveAll(x => !board.IsValidMove(x.row, x.col, stoneColor));
 
         candidates.Sort((a, b) => b.score.CompareTo(a.score));
 
@@ -268,25 +268,25 @@ public class OmokAI
         return candidates;
     }
 
-    private List<(int row, int col, int score)> MakeWinMoves(List<(int row, int col, int score)> candidates, StoneColor[,] board)
+    private List<(int row, int col, int score)> MakeWinMoves(List<(int row, int col, int score)> candidates, BoardData board)
     {
         var winMoves = new List<(int row, int col, int score)>();
         for (int i = 0; i < candidates.Count; i++)
         {
             var (r, c, score) = candidates[i];
-            board[r, c] = stoneColor;
+            board.SetStone(r, c, stoneColor);
 
-            if (OmokRules.CheckWin(r, c, stoneColor, board))
+            if (board.CheckWin(r, c, stoneColor))
                 winMoves.Add((r, c, score));
 
-            board[r, c] = StoneColor.None;
+            board.Undo();
         }
 
         winMoves.Sort((a, b) => b.score.CompareTo(a.score));
         return winMoves;
     }
 
-    private List<(int row, int col, int score)> MakeBlockMoves(List<(int row, int col, int score)> candidates, StoneColor[,] board)
+    private List<(int row, int col, int score)> MakeBlockMoves(List<(int row, int col, int score)> candidates, BoardData board)
     {
         StoneColor enemy = stoneColor == StoneColor.White ? StoneColor.Black : StoneColor.White;
 
@@ -295,12 +295,12 @@ public class OmokAI
         for (int i = 0; i < candidates.Count; i++)
         {
             var (r, c, sc) = candidates[i];
-            board[r, c] = enemy;
+            board.SetStone(r, c, enemy);
 
-            if (OmokRules.CheckWin(r, c, enemy, board))
+            if (board.CheckWin(r, c, enemy))
                 blockMoves.Add((r, c, sc));
 
-            board[r, c] = StoneColor.None;
+            board.Undo();
         }
 
         blockMoves.Sort((a, b) => b.score.CompareTo(a.score));

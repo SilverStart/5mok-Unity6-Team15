@@ -14,7 +14,7 @@ public class PatternAnalyzer
         (1, -1),
     };
 
-    public int EvalPattern(StoneColor[,] boardState, int x, int y)
+    public int EvalPattern(BoardData boardState, int x, int y)
     {
         int score = 0;
 
@@ -29,7 +29,7 @@ public class PatternAnalyzer
         return score;
     }
 
-    private string BuildLine(StoneColor[,] boardState, int x, int y, (int dx, int dy) direction, StoneColor currentPlayer)
+    private string BuildLine(BoardData boardState, int x, int y, (int dx, int dy) direction, StoneColor currentPlayer)
     {
         StringBuilder line = new();
 
