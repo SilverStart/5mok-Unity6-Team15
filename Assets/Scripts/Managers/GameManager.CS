@@ -57,6 +57,8 @@ public class GameManager : Singleton<GameManager>
         _inputController.OnClick += _gameLogic.SetInputResult;
         // soundManager.PlayBGM("GameBGM");
         _inputController.SetRun(true);
+        _timerUIManager.StartTimer();
+        _gameLogic.GameStart();
     }
 
     public void GameOver(string resultStr)

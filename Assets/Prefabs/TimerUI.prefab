@@ -850,10 +850,7 @@ MonoBehaviour:
   whiteOverlay: {fileID: 3094887897047860883}
   whiteText: {fileID: 5094044746168997316}
   whiteTimer: {fileID: 5102572903148755502}
-  turnTimeLimit: 20
-  OnTurnTimeOver:
-    m_PersistentCalls:
-      m_Calls: []
+  turnTimeLimit: 30
 --- !u!1 &4878334688792893296
 GameObject:
   m_ObjectHideFlags: 0

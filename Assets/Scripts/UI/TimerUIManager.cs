@@ -42,6 +42,8 @@ public class TimerUIManager : MonoBehaviour
 
     public void ChangeTurn(StoneColor color)
     {
+        if (!isRunning) return;
+
         bool isBlackTurn = color == StoneColor.Black;
 
         blackOverlay.SetActive(isBlackTurn);
@@ -57,6 +59,10 @@ public class TimerUIManager : MonoBehaviour
         Init(turnTimeLimit);
         currentTurn = color;
         remainingTime = turnTimeLimit;
+    }
+
+    public void StartTimer()
+    {
         isRunning = true;
     }
 
