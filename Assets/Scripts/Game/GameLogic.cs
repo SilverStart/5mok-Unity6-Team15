@@ -40,6 +40,10 @@ public class GameLogic
                 whiteState = new PlayerState(StoneColor.White, this);
                 break;
         }
+    }
+
+    public void GameStart()
+    {
         SetState(blackState);
     }
 
