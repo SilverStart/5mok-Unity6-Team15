@@ -44,6 +44,7 @@ public class BoardRenderer : MonoBehaviour
             _placedStones.Remove(move);
 
             if (last.HasValue) ShowLastStoneMarker(last.Value.x, last.Value.y);
+            else HideLastStoneMarker();
         }
     }
 
@@ -93,6 +94,11 @@ public class BoardRenderer : MonoBehaviour
         if (!lastStoneMarker.activeSelf) lastStoneMarker.SetActive(true);
 
         lastStoneMarker.transform.position = GetWorldPosition(x, y);
+    }
+
+    private void HideLastStoneMarker()
+    {
+        lastStoneMarker.SetActive(false);
     }
 
     public Transform GetStartPoint()
