@@ -1,11 +1,11 @@
+using System;
 using TMPro;
 
 using UnityEngine;
-using UnityEngine.Events;
 
 using static common.Constants;
 
-public class TimerUIManger : MonoBehaviour
+public class TimerUIManager : MonoBehaviour
 {
     [SerializeField] private GameObject blackOverlay;
     [SerializeField] private TextMeshProUGUI blackText;
@@ -18,7 +18,7 @@ public class TimerUIManger : MonoBehaviour
     [Header("Settings")]
     [SerializeField] private float turnTimeLimit = 60f;
 
-    public UnityEvent<StoneColor> OnTurnTimeOver;
+    public Action<StoneColor> OnTurnTimeOver;
 
     private StoneColor currentTurn;
     private float remainingTime;
