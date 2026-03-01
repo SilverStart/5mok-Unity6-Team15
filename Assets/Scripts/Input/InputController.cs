@@ -70,6 +70,7 @@ public class InputController : MonoBehaviour
         if (!isRunning) return;
         if (!isStoneReady) return;
         OnClick?.Invoke(PlayerInput.Move(X, Y));
+        boardRenderer.HidePositionToPlaceStoneMarker();
         isStoneReady = false;
     }
 

@@ -6,7 +6,7 @@ using static common.Constants;
 public class GameLogic
 {
     public Action<int, int, StoneColor> OnStonePlaced;
-    public Action<int, int> OnUndo;
+    public Action<(int, int), (int, int)?> OnUndo;
     public Action<int, int> OnPlaceX;
 
     private BoardData _board;
@@ -55,8 +55,9 @@ public class GameLogic
         if (_board.IsValidMove(x, y, color))
         {
             // 정상적인 위치일 때
-            OnStonePlaced?.Invoke(x, y, color);
             _board.SetStone(x, y, color);
+            OnStonePlaced?.Invoke(x, y, color);
+            CheckForbiddenPlaces();
             return true;
         }
         else
@@ -128,12 +129,25 @@ public class GameLogic
         var move = _board.LastMove();
         if (move.HasValue)
         {
-            OnUndo?.Invoke(move.Value.x, move.Value.y);
             _board.Undo();
+            OnUndo?.Invoke((move.Value.x, move.Value.y), _board.LastMove());
+            CheckForbiddenPlaces();
             return true;
         }
 
         return false;
+    }
+
+    private void CheckForbiddenPlaces()
+    {
+        for (int x = 0; x < BOARD_SIZE; x++)
+        {
+            for (int y = 0; y < BOARD_SIZE; y++)
+            {
+                if (_board[x, y] == StoneColor.None && !_board.IsValidMove(x, y, StoneColor.Black))
+                    OnPlaceX?.Invoke(x, y);
+            }
+        }
     }
 
     // TODO: BoardData객체의 참조를 넘기는 방식으로 수정해야 함
