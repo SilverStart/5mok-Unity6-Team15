@@ -784,10 +784,10 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 0.07450981, g: 0.9254902, b: 0.35686275, a: 1}
-    m_HighlightedColor: {r: 0.07450981, g: 0.9254902, b: 0.35686275, a: 1}
+    m_NormalColor: {r: 0.13333334, g: 0.8, b: 0.3529412, a: 1}
+    m_HighlightedColor: {r: 0, g: 1, b: 0.33179712, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.07450981, g: 0.9254902, b: 0.35686275, a: 1}
+    m_SelectedColor: {r: 0.062611245, g: 0.6320754, b: 0.25155783, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -806,19 +806,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2203800040587035168}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 3798734078363399074}
-        m_TargetAssemblyTypeName: GameTypePanelController, Assembly-CSharp
-        m_MethodName: OnSingleWhiteClick
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!1 &6855332544287931817
 GameObject:
   m_ObjectHideFlags: 0
@@ -910,6 +898,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   panelTransform: {fileID: 6373177370806477507}
+  Buttons:
+  - buttonName: SingleBlack
+    button: {fileID: 2466371400903498500}
+  - buttonName: SingleWhite
+    button: {fileID: 305750081983484330}
+  - buttonName: DualPlay
+    button: {fileID: 7709754526640636695}
 --- !u!225 &536473608013454300
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -1020,10 +1015,10 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 0.07450981, g: 0.9254902, b: 0.35686275, a: 1}
-    m_HighlightedColor: {r: 0.07450981, g: 0.9254902, b: 0.35686275, a: 1}
+    m_NormalColor: {r: 0.13333334, g: 0.8, b: 0.3529412, a: 1}
+    m_HighlightedColor: {r: 0, g: 1, b: 0.33179712, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.07450981, g: 0.9254902, b: 0.35686275, a: 1}
+    m_SelectedColor: {r: 0.062611245, g: 0.6320754, b: 0.25155783, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -1042,19 +1037,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 990118301670377942}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 3798734078363399074}
-        m_TargetAssemblyTypeName: GameTypePanelController, Assembly-CSharp
-        m_MethodName: OnDualPlayClick
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!1 &7474342506755953814
 GameObject:
   m_ObjectHideFlags: 0
@@ -1153,10 +1136,10 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 0.07450981, g: 0.9254902, b: 0.35686275, a: 1}
-    m_HighlightedColor: {r: 0.07450981, g: 0.9254902, b: 0.35686275, a: 1}
+    m_NormalColor: {r: 0.13333334, g: 0.8, b: 0.3529412, a: 1}
+    m_HighlightedColor: {r: 0, g: 1, b: 0.33179712, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.07450981, g: 0.9254902, b: 0.35686275, a: 1}
+    m_SelectedColor: {r: 0.062611245, g: 0.6320754, b: 0.25155783, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -1175,16 +1158,4 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 5621643455332816491}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 3798734078363399074}
-        m_TargetAssemblyTypeName: GameTypePanelController, Assembly-CSharp
-        m_MethodName: OnSingleBlackClick
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []

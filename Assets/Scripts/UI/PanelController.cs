@@ -5,13 +5,13 @@ using DG.Tweening;
 public class PanelController : MonoBehaviour
 {
     // 팝업 패널의 RectTransform 참조
-    [SerializeField] private RectTransform panelTransform;
+    [SerializeField] protected RectTransform panelTransform;
 
     public delegate void PanelControllerHideDelegate();
 
     private CanvasGroup _canvasGroup;
 
-    void Awake()
+    protected virtual void Awake()
     {
         _canvasGroup = GetComponent<CanvasGroup>();
     }
