@@ -48,7 +48,7 @@ public class OmokAI
             float alpha = -MAX_SCORE;
             float beta = MAX_SCORE;
 
-            var validPositions = GetValidPositions(board);
+            var validPositions = GetValidPositions(board, stoneColor);
             Debug.Log($"AI: 유효한 위치 수: {validPositions.Count}");
             for (int i = 0; i < validPositions.Count; i++)
             {
@@ -83,6 +83,8 @@ public class OmokAI
                 }
 
                 alpha = Mathf.Max(alpha, bestScore);
+
+                Debug.Log($"AI: 후보: {row}, {col}, 점수: {scoreValue}, 최적 점수: {bestScore}");
             }
 
             if (bestMove == null && validPositions.Count > 0)
@@ -90,10 +92,11 @@ public class OmokAI
                 bestMove = (validPositions[0].row, validPositions[0].col);
             }
 
+            // Debug.Log($"AI: 최적의 수: {bestMove?.row}, {bestMove?.col}, {bestScore}");
             return bestMove;
         });
 
-        Debug.Log($"AI: Minimax 함수를 {totalMinimaxCount}번 호출했습니다.");
+        // Debug.Log($"AI: Minimax 함수를 {totalMinimaxCount}번 호출했습니다.");
         totalMinimaxCount = 0;
 
         Debug.Log($"AI: 최적의 수를 찾는데 걸린 시간: {(Time.time - time):F2}초, 놓은 자리: {result?.row}, {result?.col}");
@@ -130,7 +133,7 @@ public class OmokAI
         {
             var bestScore = -MAX_SCORE;
 
-            var validPositions = GetValidPositions(board, lastMove);
+            var validPositions = GetValidPositions(board, stoneColor, lastMove);
 
             for (int i = 0; i < validPositions.Count; i++)
             {
@@ -154,7 +157,7 @@ public class OmokAI
         {
             var bestScore = MAX_SCORE;
 
-            var validPositions = GetValidPositions(board, lastMove);
+            var validPositions = GetValidPositions(board, enemyColor, lastMove);
             for (int i = 0; i < validPositions.Count; i++)
             {
                 var (row, col, score) = validPositions[i];
@@ -192,7 +195,7 @@ public class OmokAI
 
                 int multiplier = (board[i, j] == stoneColor) ? 1 : -DEFENSE_MULTIPLIER;
 
-                score += patternAnalyzer.EvalPattern(board, i, j) * multiplier;
+                score += patternAnalyzer.EvalPattern(board, i, j, board[i, j]) * multiplier;
             }
         }
 
@@ -222,7 +225,7 @@ public class OmokAI
         return false;
     }
 
-    private List<(int row, int col, int score)> GetValidPositions(BoardData board, (int x, int y)? lastMove = null)
+    private List<(int row, int col, int score)> GetValidPositions(BoardData board, StoneColor currentPlayer, (int x, int y)? lastMove = null)
     {
         int rows = board.GetLength(0);
         int cols = board.GetLength(1);
@@ -240,7 +243,7 @@ public class OmokAI
                 if (!IsNearStone(r, c, board))
                     continue;
 
-                candidates.Add((r, c, patternAnalyzer.EvalPattern(board, r, c)));
+                candidates.Add((r, c, patternAnalyzer.EvalPattern(board, r, c, currentPlayer)));
             }
         }
 
