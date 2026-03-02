@@ -14,13 +14,13 @@ public class PatternAnalyzer
         (1, -1),
     };
 
-    public int EvalPattern(BoardData boardState, int x, int y)
+    public int EvalPattern(BoardData boardState, int x, int y, StoneColor currentPlayer)
     {
         int score = 0;
 
         foreach (var (dx, dy) in directions)
         {
-            string line = BuildLine(boardState, x, y, (dx, dy), boardState[x, y]);
+            string line = BuildLine(boardState, x, y, (dx, dy), currentPlayer);  
             PatternType pattern = MatchBestPattern(line);
 
             score += PatternContainer.LineTemplates.FirstOrDefault(t => t.patternType == pattern).Score;
@@ -43,12 +43,6 @@ public class PatternAnalyzer
 
             if (nx < 0 || nx >= boardState.GetLength(0) || ny < 0 || ny >= boardState.GetLength(1))
             {
-                // line = (i < 0) ? "B" + line : line + "B";
-                /* if (i < 0)
-                    line.Insert(0, 'B');
-                else
-                    line.Append('B'); */
-
                 if (i < 0)
                     left.Append('B');
                 else
@@ -57,22 +51,19 @@ public class PatternAnalyzer
                 continue;
             }
 
-            StoneColor nextState = boardState[nx, ny];
+            StoneColor nextState = (nx == x && ny == y) ? currentPlayer : boardState[nx, ny];
             char nextC = nextState == StoneColor.None ? 'E' : nextState == currentPlayer ? 'S' : 'B';
 
-            /* if (i < 0)
-                line.Insert(0, nextC);
-            else
-                line.Append(nextC); */
 
-            if (i < 0)
+            if (i <= 0)
                 left.Append(nextC);
             else
                 right.Append(nextC);
         }
 
-        for (int i = left.Length - 1; i >= 0; i--)
-            line.Append(left[i]);
+        /* for (int i = left.Length - 1; i >= 0; i--)
+            line.Append(left[i]); */
+        line.Append(left);
         line.Append(right);
 
         return line.ToString();
