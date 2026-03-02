@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class SoundPopupUI : PanelController
+public class SoundPopupUI : MonoBehaviour
 {
     private SoundManager sm;
 
